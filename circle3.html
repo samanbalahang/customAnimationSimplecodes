@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll-Controlled Circle Rotation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            min-height: 200vh; /* Make page scrollable */
+        }
+
+        .scroll-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .circle-container {
+            position: relative;
+            width: 80vmin;
+            height: 80vmin;
+            max-width: 400px;
+            max-height: 400px;
+            transition: transform 0.1s linear; /* Rotation applied to container */
+        }
+
+        .circle {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Position elements around the circle */
+        .element {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        /* Position the elements */
+        .top {
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .right {
+            right: -35px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .bottom {
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .left {
+            left: -35px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 5;
+        }
+
+        .center-content h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-section {
+            padding: 100px 20px;
+            background: white;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .content-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .content-section p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .continue-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            margin-top: 50px;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-section">
+        <div class="circle-container">
+            <div class="circle">
+                <div class="center-content">
+                    <h1>SCROLL TO ROTATE</h1>
+                    <p>Entire circle rotates with elements</p>
+                </div>
+            </div>
+            
+            <!-- Elements positioned around the circle -->
+            <div class="element top">TOP</div>
+            <div class="element right">RIGHT</div>
+            <div class="element bottom">BOTTOM</div>
+            <div class="element left">LEFT</div>
+        </div>
+        
+        <div class="instructions">
+            Scroll down to rotate the entire circle with elements ↓
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Normal Scrolling Resumed</h2>
+        <p>The circle rotation effect has ended and normal scrolling behavior has resumed. You can now scroll through the content as usual.</p>
+        <p>This section demonstrates the transition from the custom scroll-controlled rotation to standard page scrolling.</p>
+        <button class="continue-btn" onclick="scrollToTop()">Back to Top</button>
+    </div>
+
+    <script>
+        let rotationAmount = 0;
+        let isRotating = true;
+        const circleContainer = document.querySelector('.circle-container'); // Rotate the container instead
+        const scrollSection = document.querySelector('.scroll-section');
+        const contentSection = document.querySelector('.content-section');
+        const instructions = document.querySelector('.instructions');
+
+        // Calculate when the scroll section ends
+        const scrollSectionHeight = scrollSection.offsetHeight;
+        const maxRotation = 720; // Maximum rotation in degrees (2 full rotations)
+
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const scrollProgress = Math.min(scrollY / (scrollSectionHeight * 0.8), 1);
+            
+            if (isRotating && scrollProgress < 1) {
+                // Calculate rotation based on scroll progress
+                rotationAmount = scrollProgress * maxRotation;
+                circleContainer.style.transform = `rotate(${rotationAmount}deg)`; // Rotate the container
+                
+                // Update instructions
+                const rotationProgress = Math.floor((rotationAmount / maxRotation) * 100);
+                instructions.textContent = `Rotating: ${rotationProgress}% - Keep scrolling...`;
+                
+                // Prevent default scrolling behavior while rotating
+                if (scrollY < scrollSectionHeight * 0.9) {
+                    window.scrollTo(0, Math.min(scrollY, scrollSectionHeight * 0.9));
+                }
+            } else if (isRotating && scrollProgress >= 1) {
+                // Transition to normal scrolling
+                isRotating = false;
+                instructions.style.opacity = '0';
+                circleContainer.style.transform = `rotate(${maxRotation}deg)`;
+                circleContainer.style.transition = 'transform 0.5s ease';
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            // Reset rotation when going back to top
+            setTimeout(() => {
+                isRotating = true;
+                circleContainer.style.transform = 'rotate(0deg)';
+                circleContainer.style.transition = 'transform 0.1s linear';
+                instructions.style.opacity = '1';
+                instructions.textContent = 'Scroll down to rotate the entire circle with elements ↓';
+            }, 500);
+        }
+
+        // Throttle scroll events for better performance
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(function() {
+                    handleScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', function() {
+            // Ensure we start at the top
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>
