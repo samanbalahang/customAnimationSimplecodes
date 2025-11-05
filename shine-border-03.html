@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Border</title>
+    <style>
+        :root {
+            --accent: black;
+            --canvas: color-mix(in lch, canvas, canvasText 1%);
+            --border: color-mix(in lch, canvas, canvasText 10%);
+            --text: color-mix(in lch, canvasText, canvas 25%);
+            --border-radius: 24;
+            --border-width: 3;
+            --trail-size: 25;
+        }
+
+        aside {
+            width: 66ch;
+            max-width: calc(100vw - 4rem);
+            line-height: 1.5;
+            container-type: inline-size;
+            position: relative;
+            margin: 2rem auto;
+        }
+
+        .border {
+            position: absolute;
+            inset: 0;
+            clip-path: inset(0 0 0 0 round calc(var(--border-radius) * 1px));
+            border-radius: calc(var(--border-radius) * 1px);
+            background: var(--border);
+            z-index: -1;
+            border: 0;
+        }
+
+        .trail {
+            width: calc(var(--trail-size) * 1cqmin);
+            aspect-ratio: 2 / 1;
+            position: absolute;
+            background: radial-gradient(100% 100% at right,
+                    var(--accent, red),
+                    transparent 50%);
+            offset-path: border-box;
+            offset-anchor: 100% 50%;
+            animation: journey 3s infinite linear; /* Faster: 3s instead of 6s */
+        }
+
+        /* Second trail - exactly opposite */
+        .trail-opposite {
+            background: radial-gradient(100% 100% at left,
+                    var(--accent, blue),
+                    transparent 50%);
+            offset-anchor: 0% 50%;
+            animation: journey-opposite 3s infinite linear; /* Faster: 3s instead of 6s */
+            offset-distance: 50%;
+        }
+
+        @keyframes journey {
+            to {
+                offset-distance: 100%;
+            }
+        }
+
+        @keyframes journey-opposite {
+            to {
+                offset-distance: 150%;
+            }
+        }
+
+        .content {
+            background: linear-gradient(var(--canvas), var(--canvas)) padding-box,
+                    transparent;
+            border: calc(var(--border-width) * 1px) solid transparent;
+            border-radius: calc(var(--border-radius) * 1px);
+            padding: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        aside p {
+            font-weight: 300;
+            text-align: center;
+            margin: 0;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <aside class="fluid">
+            <div class="border">
+                <div class="trail"></div>
+                <div class="trail trail-opposite"></div>
+            </div>
+            <div class="content">
+                <p>Your content goes here</p>
+            </div>
+        </aside>
+    </main>
+</body>
+</html>

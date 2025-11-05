@@ -1,1 +1,2 @@
 https://prismic.io/blog/css-animation-examples
+https://medium.com/@forfrontendofficial/14-css-shine-effects-for-frontend-3194b796c174
