@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Wavy SVG with Horizontal Flip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .image-container {
+            position: relative;
+            height: 350px;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .waves-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: center;
+        }
+
+        .wave-1 {
+            fill: rgba(255, 255, 255, 0.7);
+            animation: waveAnimation 8s ease-in-out infinite alternate, flipHorizontal 16s ease-in-out infinite;
+        }
+
+        .wave-2 {
+            fill: rgba(255, 255, 255, 0.5);
+            animation: waveAnimation 10s ease-in-out infinite alternate-reverse, flipHorizontal 14s ease-in-out infinite;
+        }
+
+        .wave-3 {
+            fill: rgba(255, 255, 255, 0.3);
+            animation: waveAnimation 12s ease-in-out infinite alternate, flipHorizontal 18s ease-in-out infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                transform: translateX(0) scaleY(1);
+            }
+            50% {
+                transform: translateX(-5%) scaleY(1.1);
+            }
+            100% {
+                transform: translateX(5%) scaleY(0.9);
+            }
+        }
+
+        @keyframes flipHorizontal {
+            0%, 100% {
+                transform: scaleX(1);
+            }
+            50% {
+                transform: scaleX(-1);
+            }
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .code-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .code-container h3 {
+            margin-bottom: 15px;
+            color: #a6e3ff;
+        }
+
+        .code-container code {
+            display: block;
+            white-space: pre;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .flip-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Animated Wavy SVG</h1>
+        <p class="subtitle">With horizontal flip and wave animations</p>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Mountain landscape">
+                <div class="flip-indicator">Flip Animation Active</div>
+                
+                <div class="waves-container">
+                    <svg class="wave wave-1" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+                        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+                        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+                    </svg>
+                    
+                    <svg class="wave wave-2" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+                        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+                        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+                    </svg>
+                    
+                    <svg class="wave wave-3" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25"></path>
+                        <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5"></path>
+                        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="content">
+                <h2>Dynamic Wave Animation</h2>
+                <p>This design features animated SVG waves with horizontal flipping. Each wave layer has its own animation timing, creating a fluid, organic motion that mimics real ocean waves.</p>
+                <p>The horizontal flip is achieved using CSS transform: scaleX(-1), and the wave motion is created by animating the horizontal position and vertical scale of the SVG elements.</p>
+                
+                <div class="controls">
+                    <button id="pauseBtn">Pause Animation</button>
+                    <button id="speedUpBtn">Speed Up</button>
+                    <button id="slowDownBtn">Slow Down</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="code-container">
+            <h3>CSS Animation Code</h3>
+            <code>@keyframes waveAnimation {
+  0% {
+    transform: translateX(0) scaleY(1);
+  }
+  50% {
+    transform: translateX(-5%) scaleY(1.1);
+  }
+  100% {
+    transform: translateX(5%) scaleY(0.9);
+  }
+}
+
+@keyframes flipHorizontal {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+}
+
+.wave-1 {
+  animation: waveAnimation 8s ease-in-out infinite alternate, 
+             flipHorizontal 16s ease-in-out infinite;
+}
+
+.wave-2 {
+  animation: waveAnimation 10s ease-in-out infinite alternate-reverse, 
+             flipHorizontal 14s ease-in-out infinite;
+}
+
+.wave-3 {
+  animation: waveAnimation 12s ease-in-out infinite alternate, 
+             flipHorizontal 18s ease-in-out infinite;
+}</code>
+        </div>
+        
+        <p class="note">Click the buttons above to control the animation. The waves will flip horizontally and move in a wavy pattern.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const waves = document.querySelectorAll('.wave');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const speedUpBtn = document.getElementById('speedUpBtn');
+            const slowDownBtn = document.getElementById('slowDownBtn');
+            
+            let isPaused = false;
+            let speedMultiplier = 1;
+            
+            pauseBtn.addEventListener('click', function() {
+                isPaused = !isPaused;
+                waves.forEach(wave => {
+                    if (isPaused) {
+                        wave.style.animationPlayState = 'paused';
+                        pauseBtn.textContent = 'Resume Animation';
+                    } else {
+                        wave.style.animationPlayState = 'running';
+                        pauseBtn.textContent = 'Pause Animation';
+                    }
+                });
+            });
+            
+            speedUpBtn.addEventListener('click', function() {
+                speedMultiplier = Math.min(speedMultiplier + 0.5, 3);
+                updateAnimationSpeed();
+            });
+            
+            slowDownBtn.addEventListener('click', function() {
+                speedMultiplier = Math.max(speedMultiplier - 0.5, 0.5);
+                updateAnimationSpeed();
+            });
+            
+            function updateAnimationSpeed() {
+                waves.forEach(wave => {
+                    wave.style.animationDuration = `${16 / speedMultiplier}s, ${12 / speedMultiplier}s`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

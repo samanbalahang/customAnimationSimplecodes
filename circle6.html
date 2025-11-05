@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Positioned Circle</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .parent {
+            overflow: hidden;
+            width: 100vw;
+            min-height: 1500px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: black;
+            position: relative;
+        }
+
+        .circle {
+            width: 300vw;
+            height: 300vw;
+            background-color: red;
+            border-radius: 50%;
+            position: sticky;
+            top: 17rem;
+            transform: translate(0, 0);
+        }
+
+        .element {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .right {
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .bottom {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .left {
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="parent">
+        <div class="circle">
+            <div class="element top">TOP</div>
+            <div class="element right">RIGHT</div>
+            <div class="element bottom">BOTTOM</div>
+            <div class="element left">LEFT</div>
+        </div>
+    </div>
+</body>
+</html>

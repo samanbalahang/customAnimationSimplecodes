@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curved Text</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+
+        .curved-text {
+            display: flex;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .curved-text span {
+            display: inline-block;
+            transform-origin: center 100px;
+        }
+
+        /* Different rotation for each character */
+        .curved-text span:nth-child(1) { transform: rotate(-15deg); }
+        .curved-text span:nth-child(2) { transform: rotate(-10deg) translate(0,-5px); }
+        .curved-text span:nth-child(3) { transform: rotate(-5deg) translate(0,-12px);  }
+        .curved-text span:nth-child(4) { transform: rotate(0deg) translate(0,-10px); }
+        .curved-text span:nth-child(5) { transform: rotate(5deg) translate(0,-8px); }
+        .curved-text span:nth-child(6) { transform: rotate(10deg) translate(0,-5px); }
+        .curved-text span:nth-child(7) { transform: rotate(15deg); }
+    </style>
+</head>
+<body>
+    <h2 class="curved-text">
+        <span>C</span>
+        <span>U</span>
+        <span>R</span>
+        <span>V</span>
+        <span>E</span>
+        <span>D</span>
+    </h2>
+</body>
+</html>

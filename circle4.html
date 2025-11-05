@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speed-Based Circle Rotation</title>
+    <title>Bidirectional Scroll Rotation</title>
     <style>
         * {
             margin: 0;
@@ -14,24 +14,26 @@
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(to bottom, #667eea, #764ba2);
-            overflow-x: hidden;
         }
 
         .rotation-section {
-            height: 100vh;
+            height: 200vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             position: relative;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .circle-container {
-            position: relative;
+            position: sticky;
+            top: 50vh;
+            transform: translateY(-50%);
             width: 80vmin;
             height: 80vmin;
             max-width: 400px;
             max-height: 400px;
+            transition: transform 0.1s linear;
         }
 
         .circle {
@@ -139,7 +141,7 @@
         }
 
         .instructions {
-            position: absolute;
+            position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
@@ -148,10 +150,13 @@
             font-size: 1.1em;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
             z-index: 100;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
         }
 
         .progress-container {
-            position: absolute;
+            position: fixed;
             bottom: 70px;
             left: 50%;
             transform: translateX(-50%);
@@ -160,6 +165,7 @@
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
             overflow: hidden;
+            z-index: 100;
         }
 
         .progress-bar {
@@ -169,28 +175,32 @@
             transition: width 0.1s ease;
         }
 
-        .scroll-blocker {
+        .direction-indicator {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        .scroll-blocker.active {
-            pointer-events: all;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 15px;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
     <div class="rotation-section">
+        <div class="direction-indicator" id="directionIndicator">
+            Scroll ↓ to rotate forward • Scroll ↑ to rotate back
+        </div>
+        
         <div class="circle-container">
             <div class="circle">
                 <div class="center-content">
                     <h1>SCROLL TO ROTATE</h1>
-                    <p>Scroll speed controls rotation</p>
+                    <p>Scroll down/up to control direction</p>
                 </div>
             </div>
             
@@ -201,143 +211,109 @@
         </div>
         
         <div class="progress-container">
-            <div class="progress-bar"></div>
+            <div class="progress-bar" id="progressBar"></div>
         </div>
         
-        <div class="instructions">
-            Scroll down to rotate 180° - Speed matters!
+        <div class="instructions" id="instructions">
+            Scroll to rotate the circle 180°
         </div>
     </div>
 
     <div class="content-section">
-        <h2>Normal Scrolling Resumed</h2>
-        <p>The circle rotation effect has ended and normal scrolling behavior has resumed.</p>
+        <h2>Normal Scrolling</h2>
+        <p>You've completed the circle rotation! The circle rotated exactly 180 degrees based on your scroll position.</p>
+        <p>Scroll back up to see the reverse rotation.</p>
         <button class="continue-btn" onclick="scrollToTop()">Back to Top</button>
     </div>
 
-    <div class="scroll-blocker" id="scrollBlocker"></div>
-
     <script>
-        class ScrollRotationController {
+        class ScrollRotation {
             constructor() {
                 this.circleContainer = document.querySelector('.circle-container');
-                this.progressBar = document.querySelector('.progress-bar');
-                this.instructions = document.querySelector('.instructions');
-                this.scrollBlocker = document.getElementById('scrollBlocker');
+                this.progressBar = document.getElementById('progressBar');
+                this.instructions = document.getElementById('instructions');
+                this.directionIndicator = document.getElementById('directionIndicator');
+                this.rotationSection = document.querySelector('.rotation-section');
                 
-                this.currentRotation = 0;
-                this.targetRotation = 0;
-                this.isRotating = false;
-                this.rotationComplete = false;
-                this.lastScrollTime = 0;
-                this.lastScrollY = 0;
-                this.scrollVelocity = 0;
-                
-                this.ROTATION_SECTION_HEIGHT = window.innerHeight;
                 this.MAX_ROTATION = 180;
-                this.SCROLL_SENSITIVITY = 0.5;
-                this.VELOCITY_MULTIPLIER = 2;
+                this.lastScrollY = window.scrollY;
+                this.lastScrollTime = Date.now();
+                this.scrollVelocity = 0;
                 
                 this.init();
             }
             
             init() {
                 this.bindEvents();
-                this.animationLoop();
+                this.updateRotation(); // Initial update
             }
             
             bindEvents() {
-                // Use wheel event for better control
-                window.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
                 window.addEventListener('scroll', this.handleScroll.bind(this));
-                window.addEventListener('resize', this.handleResize.bind(this));
-            }
-            
-            handleWheel(e) {
-                if (this.rotationComplete) return;
-                
-                e.preventDefault();
-                
-                const currentTime = Date.now();
-                const deltaTime = currentTime - this.lastScrollTime;
-                this.lastScrollTime = currentTime;
-                
-                // Calculate scroll velocity
-                const deltaY = e.deltaY;
-                this.scrollVelocity = Math.abs(deltaY) / (deltaTime || 1);
-                
-                // Apply rotation based on scroll speed
-                const rotationDelta = deltaY * this.SCROLL_SENSITIVITY * (1 + this.scrollVelocity * this.VELOCITY_MULTIPLIER);
-                this.targetRotation = Math.max(0, Math.min(this.targetRotation + rotationDelta, this.MAX_ROTATION));
-                
-                // Update UI
-                this.updateRotationDisplay();
-                
-                // Check if rotation is complete
-                if (this.targetRotation >= this.MAX_ROTATION && !this.rotationComplete) {
-                    this.completeRotation();
-                }
-                
-                // Prevent default scroll behavior while rotating
-                return false;
+                window.addEventListener('wheel', this.handleWheel.bind(this));
             }
             
             handleScroll() {
-                if (!this.rotationComplete) {
-                    // Calculate scroll velocity for normal scrolling
-                    const currentScrollY = window.scrollY;
-                    const currentTime = Date.now();
-                    const deltaTime = currentTime - this.lastScrollTime;
-                    
-                    if (deltaTime > 0) {
-                        this.scrollVelocity = Math.abs(currentScrollY - this.lastScrollY) / deltaTime;
-                    }
-                    
-                    this.lastScrollY = currentScrollY;
-                    this.lastScrollTime = currentTime;
-                    
-                    // Block scroll until rotation is complete
-                    if (window.scrollY > 0) {
-                        window.scrollTo(0, 0);
-                    }
+                this.updateRotation();
+                this.calculateScrollVelocity();
+            }
+            
+            handleWheel(e) {
+                // Use wheel event to detect scroll direction for better UX
+                const isScrollingDown = e.deltaY > 0;
+                this.updateDirectionIndicator(isScrollingDown);
+            }
+            
+            calculateScrollVelocity() {
+                const currentTime = Date.now();
+                const deltaTime = currentTime - this.lastScrollTime;
+                const deltaY = Math.abs(window.scrollY - this.lastScrollY);
+                
+                if (deltaTime > 0) {
+                    this.scrollVelocity = deltaY / deltaTime;
+                }
+                
+                this.lastScrollY = window.scrollY;
+                this.lastScrollTime = currentTime;
+            }
+            
+            updateRotation() {
+                const rotationSectionHeight = this.rotationSection.offsetHeight;
+                const maxScroll = rotationSectionHeight - window.innerHeight;
+                const scrollProgress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+                const rotation = scrollProgress * this.MAX_ROTATION;
+                
+                // Apply rotation
+                this.circleContainer.style.transform = `translateY(-50%) rotate(${rotation}deg)`;
+                
+                // Update progress bar
+                const progress = (rotation / this.MAX_ROTATION) * 100;
+                this.progressBar.style.width = `${progress}%`;
+                
+                // Update instructions
+                this.updateInstructions(rotation, progress);
+            }
+            
+            updateInstructions(rotation, progress) {
+                const isScrollingDown = window.scrollY > this.lastScrollY;
+                
+                if (rotation >= this.MAX_ROTATION - 1) {
+                    this.instructions.textContent = 'Rotation Complete! Scroll ↑ to go back';
+                    this.instructions.style.background = 'rgba(33, 150, 243, 0.3)';
+                } else if (isScrollingDown) {
+                    this.instructions.textContent = `Rotating Forward: ${Math.round(progress)}% - Scroll ↑ to go back`;
+                    this.instructions.style.background = 'rgba(76, 175, 80, 0.3)';
+                } else {
+                    this.instructions.textContent = `Rotating Back: ${Math.round(progress)}% - Scroll ↓ to go forward`;
+                    this.instructions.style.background = 'rgba(244, 67, 54, 0.3)';
                 }
             }
             
-            handleResize() {
-                this.ROTATION_SECTION_HEIGHT = window.innerHeight;
-            }
-            
-            updateRotationDisplay() {
-                const progress = (this.targetRotation / this.MAX_ROTATION) * 100;
-                this.progressBar.style.width = `${progress}%`;
-                
-                this.instructions.textContent = `Rotation: ${Math.round(progress)}% - Scroll faster/slower to control speed`;
-            }
-            
-            completeRotation() {
-                this.rotationComplete = true;
-                this.targetRotation = this.MAX_ROTATION;
-                this.scrollBlocker.classList.remove('active');
-                
-                this.instructions.textContent = 'Rotation Complete! You can now scroll normally.';
-                this.instructions.style.background = 'rgba(0, 255, 0, 0.3)';
-                this.instructions.style.padding = '10px 20px';
-                this.instructions.style.borderRadius = '20px';
-                
-                // Allow normal scrolling
-                setTimeout(() => {
-                    document.body.style.overflow = 'auto';
-                }, 500);
-            }
-            
-            animationLoop() {
-                // Smooth rotation animation
-                const rotationDiff = this.targetRotation - this.currentRotation;
-                this.currentRotation += rotationDiff * 0.1;
-                
-                this.circleContainer.style.transform = `rotate(${this.currentRotation}deg)`;
-                
-                requestAnimationFrame(this.animationLoop.bind(this));
+            updateDirectionIndicator(isScrollingDown) {
+                this.directionIndicator.textContent = 
+                    isScrollingDown ? 
+                    'Scrolling ↓ • Rotating Forward' : 
+                    'Scrolling ↑ • Rotating Back';
             }
         }
         
@@ -346,20 +322,11 @@
                 top: 0,
                 behavior: 'smooth'
             });
-            
-            // Reset rotation after a delay
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
         }
         
         // Initialize when page loads
         window.addEventListener('load', () => {
-            // Prevent initial scrolling
-            document.body.style.overflow = 'hidden';
-            document.getElementById('scrollBlocker').classList.add('active');
-            
-            new ScrollRotationController();
+            new ScrollRotation();
         });
     </script>
 </body>

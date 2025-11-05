@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll to Rotate Circle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #667eea;
+        }
+
+        .rotation-section {
+            height: 200vh;
+            background: #667eea;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .circle-container {
+            position: sticky;
+            top: 50vh;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 300px;
+        }
+
+        .circle {
+            width: 100%;
+            height: 100%;
+            background: #ff6b6b;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .element {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .top {
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .right {
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .bottom {
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%) rotate(0deg);
+        }
+
+        .left {
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        .content-section {
+            padding: 100px 20px;
+            background: white;
+            min-height: 100vh;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="rotation-section">
+        <div class="circle-container">
+            <div class="circle">
+                <div class="element top">TOP</div>
+                <div class="element right">RIGHT</div>
+                <div class="element bottom">BOTTOM</div>
+                <div class="element left">LEFT</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>Content Section</h2>
+        <p>Scroll back up to rotate the circle in reverse.</p>
+    </div>
+
+    <script>
+        const circleContainer = document.querySelector('.circle-container');
+        const rotationSection = document.querySelector('.rotation-section');
+        const elements = document.querySelectorAll('.element');
+        
+        window.addEventListener('scroll', () => {
+            const sectionHeight = rotationSection.offsetHeight;
+            const maxScroll = sectionHeight - window.innerHeight;
+            const scrollProgress = Math.min(Math.max(window.scrollY / maxScroll, 0), 1);
+            const rotation = scrollProgress * 180;
+            
+            // Rotate the circle container
+            circleContainer.style.transform = `translateY(-50%) rotate(${rotation}deg)`;
+            
+            // Counter-rotate the elements to keep them upright
+            elements.forEach(element => {
+                element.style.transform = getElementTransform(element) + ` rotate(${-rotation}deg)`;
+            });
+        });
+
+        function getElementTransform(element) {
+            if (element.classList.contains('top')) {
+                return 'translateX(-50%)';
+            } else if (element.classList.contains('right')) {
+                return 'translateY(-50%)';
+            } else if (element.classList.contains('bottom')) {
+                return 'translateX(-50%)';
+            } else if (element.classList.contains('left')) {
+                return 'translateY(-50%)';
+            }
+            return '';
+        }
+    </script>
+</body>
+</html>

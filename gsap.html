@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced GSAP ScrollTrigger</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        section {
+            height: 100vh;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .features {
+            background: #f8f9fa;
+        }
+
+        .feature-box {
+            width: 300px;
+            height: 200px;
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease;
+        }
+
+        .feature-box.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .sticky-section {
+            background: #2c3e50;
+            color: white;
+            height: 150vh;
+            position: relative;
+        }
+
+        .sticky-element {
+            position: sticky;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            height: 200px;
+            background: #e74c3c;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+        }
+
+        .sticky-element.animated {
+            background: #3498db;
+            border-radius: 50%;
+            transform: translateY(-50%) scale(1.5);
+        }
+
+        .pin-section {
+            background: #34495e;
+            color: white;
+        }
+
+        .pin-element {
+            width: 100px;
+            height: 100px;
+            background: #9b59b6;
+            margin: 20px 0;
+        }
+
+        .pin-element.pinned {
+            background: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>Scroll Down to See GSAP Magic</h1>
+        <p>Watch elements get classes added on scroll</p>
+    </section>
+
+    <section class="features">
+        <div class="feature-box" id="feature1">
+            <h3>Feature 1</h3>
+            <p>This box gets a class when scrolled into view</p>
+        </div>
+        <div class="feature-box" id="feature2">
+            <h3>Feature 2</h3>
+            <p>Another animated element</p>
+        </div>
+    </section>
+
+    <section class="sticky-section">
+        <div class="sticky-element" id="stickyBox"></div>
+    </section>
+
+    <section class="pin-section">
+        <div class="pin-element" id="pin1"></div>
+        <div class="pin-element" id="pin2"></div>
+        <div class="pin-element" id="pin3"></div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Add class to feature boxes when they enter viewport
+        gsap.to("#feature1", {
+            scrollTrigger: {
+                trigger: "#feature1",
+                start: "top 80%",
+                toggleClass: "animate-in",
+                once: true // Only animate once
+            }
+        });
+
+        gsap.to("#feature2", {
+            scrollTrigger: {
+                trigger: "#feature2",
+                start: "top 80%",
+                toggleClass: "animate-in",
+                once: true
+            }
+        });
+
+        // Add class to sticky element based on scroll position
+        gsap.to("#stickyBox", {
+            scrollTrigger: {
+                trigger: ".sticky-section",
+                start: "top 50%",
+                end: "bottom 50%",
+                toggleClass: "animated",
+                scrub: true, // Smoothly follows scroll
+                markers: true
+            }
+        });
+
+        // Add classes to pin elements at different scroll positions
+        gsap.to("#pin1", {
+            scrollTrigger: {
+                trigger: "#pin1",
+                start: "top 90%",
+                toggleClass: "pinned",
+                markers: true
+            }
+        });
+
+        gsap.to("#pin2", {
+            scrollTrigger: {
+                trigger: "#pin2",
+                start: "top 90%",
+                toggleClass: "pinned",
+                markers: true
+            }
+        });
+
+        gsap.to("#pin3", {
+            scrollTrigger: {
+                trigger: "#pin3",
+                start: "top 90%",
+                toggleClass: "pinned",
+                markers: true
+            }
+        });
+    </script>
+</body>
+</html>
