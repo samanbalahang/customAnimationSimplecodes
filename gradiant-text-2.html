@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #fff;
+  padding: 3rem;
+
+  display: grid;
+  place-content: center;
+  min-block-size: 100vh;
+
+  background: fixed linear-gradient(transparent, #070707 70%),
+    fixed
+      repeating-linear-gradient(
+        #2b2b2b,
+        #2b2b2b 1px,
+        transparent 1px,
+        transparent 40px
+      ),
+    fixed
+      repeating-linear-gradient(
+        to right,
+        #2b2b2b,
+        #2b2b2b 1px,
+        transparent 1px,
+        transparent 40px
+      )
+      #070707;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw + 1rem, 5rem);
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  h1 {
+    background-image: linear-gradient(
+      to right,
+      #14f339,
+      #007aff,
+      #f6ee00,
+      #007aff,
+      #14f339,
+      #ff6262,
+      #f6ee00,
+      #007aff,
+      #14f339
+    );
+
+    /* padding: 1rem;
+    border: 20px solid rgb(255 255 255 / 50%);
+    background-clip: border-box;
+    background-clip: padding-box;
+    background-clip: content-box; */
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    --bg-size: 200%;
+    color: transparent;
+    background-size: var(--bg-size);
+    /* animation: animate 2s steps(5) infinite; */
+    animation: animate 2s linear infinite;
+    /* animation: animate 2s ease infinite; */
+  }
+
+  @keyframes animate {
+    /* from {
+      background-position: 0;
+    } */
+    to {
+      background-position: var(--bg-size);
+    }
+  }
+}
+
+    </style>
+</head>
+<body>
+    <h1>Happy New Year</h1>
+</body>
+</html>

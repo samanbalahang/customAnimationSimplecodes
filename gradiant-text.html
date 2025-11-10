@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #000;
+        }
+        .text {
+            position: absolute;
+            top: 35%;
+            left: 30%;
+            text-transform: capitalize;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #ff00f3, #0033ff, #ff00c4, #ff0000);
+            background-size: 400%;
+            font-size: 70px;
+            font-family: "Arial", sans-serif;
+            word-spacing: 5px;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: animate 10s linear infinite;
+        }
+        @keyframes animate {
+            0% {
+                background-position: 0%;
+            }
+
+            100% {
+                background-position: 400%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="text">gradient text</h1>
+</body>
+
+</html>
