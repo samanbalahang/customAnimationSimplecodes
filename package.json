@@ -1,0 +1,24 @@
+{
+  "name": "customanimationsimplecodes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samanbalahang/customAnimationSimplecodes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samanbalahang/customAnimationSimplecodes/issues"
+  },
+  "homepage": "https://github.com/samanbalahang/customAnimationSimplecodes#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}
